@@ -1,0 +1,16 @@
+{
+  "name": "ezopt",
+  "version": "1.0.0",
+  "description": "simple command line parser",
+  "main": "ezopt.js",
+  "scripts": {
+    "test": "node test.js -a -b -c --param 1 2 -d"
+  },
+  "keywords": [
+    "opt",
+    "options",
+    "getopt"
+  ],
+  "author": "Flochy",
+  "license": "ISC"
+}
