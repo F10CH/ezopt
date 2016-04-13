@@ -4,15 +4,28 @@ const __exception_base = function(message){
 }
 const __default_callback = (e,i,p)=>{ console.log(e,i,p) }
 
+var getTestCallback = function(key){
+	if(key instanceof RegExp) return (item,key)=>{ return item.match(key) }
+	if(key instanceof Array) return (item,key)=>{ return key.indexOf(item)>=0  }
+	return (item,key)=>{ return item == key }
+}
+
 var Options = module.exports = {
 
-	test: function(key, callback, num_arg, options_array){
-		if(typeof options_array == 'string') options_array = options_array.split(/\s+/)
-		var argv = options_array instanceof Array ? options_array : process.argv.slice(isNaN(options_array)?2:options_array)
-		var __test
-		if(key instanceof RegExp) __test = (item,key)=>{ return item.match(key) }
-		else if(key instanceof Array) __test = (item,key)=>{ return key.indexOf(item)>=0  }
-		else __test = (item,key)=>{ return item == key }
+	test: function(key, options_array){
+		var __test = getTestCallback(key)
+
+		for(var i of (options_array || process.argv.slice(2))){
+			if(__test(i,key)) return true
+		}
+		return false
+	},
+
+	apply: function(key, callback, num_arg, options_array){
+		if(typeof options_array == 'string') options_array = options_array.trim().split(/\s+/)
+		var argv = options_array || process.argv.slice(2)
+
+		var __test = getTestCallback(key)
 
 		if(callback instanceof Function){
 			var res = null
@@ -32,12 +45,7 @@ var Options = module.exports = {
 			return res
 		}
 		else {
-			for(var k of arguments){
-				for(var i of argv){
-					if(__test(i,k)) return true
-				}
-			}
-			return false
+			return this.test(arguments, options_array)
 		}
 	},
 
