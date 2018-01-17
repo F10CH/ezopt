@@ -1,4 +1,4 @@
-#Easy command line parser for nodejs
+# Easy command line parser for nodejs
 
 ```javascript
 var ez = require('ezopt')
